@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ChipScore 개인정보처리방침 / Privacy Policy</title>
+<style>
+  body { font-family: -apple-system, "Segoe UI", "Malgun Gothic", sans-serif; max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; line-height: 1.7; color: #1a2b22; }
+  h1 { font-size: 1.5rem; border-bottom: 2px solid #c9a13b; padding-bottom: 8px; }
+  h2 { font-size: 1.15rem; margin-top: 2em; color: #14432e; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+  th, td { border: 1px solid #cdd7d1; padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: #eef3f0; }
+  .en { color: #3a4a42; }
+  .updated { color: #6a7a72; font-size: 0.9rem; }
+  .note { background: #fdf6e3; border: 1px solid #e8d9a0; padding: 10px 14px; border-radius: 6px; font-size: 0.9rem; }
+</style>
+</head>
+<body>
+
+<!-- TODO(PUBLISH): 게시 전 사용자 작업. 아래 note 상자 전체와 이 주석을 삭제하고, "2026-XX-XX" 2곳을 실제 시행일로 바꾼 뒤 게시. -->
+<div class="note">⚠️ <b>TODO — 게시 전 사용자 작업 (게시본에서는 이 상자를 삭제)</b>
+<ol style="margin:6px 0 0; padding-left:20px">
+<li>시행일 <code>2026-XX-XX</code> 2곳(한국어·영어)을 게시일로 교체</li>
+<li><code>privacy-policy.html</code> · <code>terms-of-service.html</code> · <code>delete-account.html</code> · <code>gacha-odds.html</code>(확률 정보) 네 파일을 같은 공개 호스트(예: GitHub Pages)의 같은 폴더에 게시</li>
+<li>URL을 Play Console(개인정보처리방침, Data safety의 계정 삭제 URL)과 AdMob GDPR 메시지에 입력하고, 앱 설정 &gt; 정보 링크용으로 Claude에게 전달 (<code>gacha-odds.html</code> URL은 앱 확률 정보 시트의 웹 링크와 스토어 자세한 설명에 사용)</li>
+</ol></div>
+
+<h1>ChipScore 개인정보처리방침</h1>
+<p class="updated">시행일: 2026-XX-XX</p>
+
+<h2>1. 개요</h2>
+<p>ChipScore(이하 "본 앱")는 오프라인 카드 게임의 칩 점수를 기록·합산하는 점수 기록 도구입니다. 본 방침은 본 앱이 어떤 정보를 수집하고 어떻게 사용하는지 설명합니다. 본 앱에는 실제 돈이 오가는 기능이 없으며, 게임 내 재화는 현금으로 바꿀 수 없습니다. 본 방침은 앱 내 <b>설정 &gt; 정보</b>에서도 확인할 수 있습니다.</p>
+
+<h2>2. 수집하는 정보</h2>
+<table>
+<tr><th>항목</th><th>수집 시점</th><th>용도</th></tr>
+<tr><td>사용자 ID — Firebase Authentication 익명 계정 식별자(설정에 표시되는 Player ID), RevenueCat 앱 사용자 ID</td><td>앱 최초 실행 / 상점 이용 시</td><td>게임 데이터·지갑을 계정 단위로 저장, 구매 처리</td></tr>
+<tr><td>Google 계정 이메일 — <b>선택</b>, 계정 연결 시에만</td><td>사용자가 계정 연결을 선택한 때</td><td>기기 변경·재설치 시 데이터 복구</td></tr>
+<tr><td>닉네임, 게임 기록(방, 점수, 순위), 게임 내 재화(Gold/Gem) 잔액, 캐릭터·세레머니 선택</td><td>앱 사용 중</td><td>멀티플레이 동기화, 기록 보관, 구매 재화 보존</td></tr>
+<tr><td>구매 내역 — 영수증·거래 식별자·상품·구매 시각 (Google Play 결제, RevenueCat)</td><td>인앱 구매 시</td><td>구매 처리·복원, 중복 지급 방지, 환불 문의 대응</td></tr>
+<tr><td>뽑기 기록 — 뽑기별 순번, 결제 수단(티켓/Gold/Gem)·금액, 서버 결제 시각, 확률 버전, 결과(등급·아이템·중복 여부·조각), 티켓·조각·천장 카운터 (Firestore <code>users/{uid}/gachaDraws</code>, <code>users/{uid}/gacha</code>)</td><td>뽑기·티켓 수령·조각 교환 시</td><td>뽑기 결과 확정·지급, 확률 검증과 분쟁·환불 문의 대응(감사 기록). <b>계정 삭제 시까지 보관</b></td></tr>
+<tr><td>광고 식별자(ADID), 광고 상호작용, IP 주소로 추정한 대략적인 위치 (Google AdMob)</td><td>광고 표시 시</td><td>광고 제공·빈도 관리·부정 방지 (제3자: Google)</td></tr>
+<tr><td>동의 상태 (Google UMP)</td><td>EEA/UK 등 해당 지역</td><td>광고 개인화 동의 관리</td></tr>
+<tr><td>앱 사용 통계 (Firebase Analytics)</td><td>앱 사용 중</td><td>품질 개선</td></tr>
+<tr><td>비정상 종료·진단 정보 — 오류 기록, 기기 모델, OS 버전, 메모리 등 오류 당시 상태 (Firebase Crashlytics)</td><td>앱 오류 발생 시</td><td>오류 수정, 안정성 개선</td></tr>
+</table>
+<p><b>카메라</b>: QR 코드로 방에 참가할 때만 카메라를 사용합니다. 영상은 기기에서 QR 인식에만 처리되며 저장·전송되지 않습니다.</p>
+<p><b>위치</b>: 본 앱은 기기 위치 권한을 요청하지 않으며 GPS 등 정밀 위치를 수집하지 않습니다. 다만 광고 파트너(Google AdMob)가 IP 주소를 바탕으로 대략적인 위치(국가·도시 수준)를 추정할 수 있습니다.</p>
+<p>본 앱은 연락처, 사진, 파일을 수집하지 않습니다.</p>
+
+<h2>3. 제3자 서비스</h2>
+<p>본 앱은 다음 서비스를 사용하며, 각 서비스의 개인정보 정책이 함께 적용됩니다:
+Google Firebase — Authentication, Firestore, Analytics, Crashlytics, Remote Config (<a href="https://firebase.google.com/support/privacy">정책</a>),
+Google AdMob (<a href="https://policies.google.com/technologies/ads">정책</a>),
+Google Play 결제,
+RevenueCat (<a href="https://www.revenuecat.com/privacy">정책</a>).
+광고 목적의 데이터(광고 ID, 광고 상호작용, 대략적인 위치)는 Google과 공유됩니다. 그 밖의 데이터는 위 서비스가 본 앱을 대신해 처리하며, 개인정보를 판매하지 않습니다.</p>
+
+<h2>4. 보관 및 삭제</h2>
+<p>게임 데이터, 지갑, 뽑기 기록은 계정이 유지되는 동안 보관되며 계정 삭제 시 함께 삭제됩니다. 다음 두 가지 방법으로 계정과 데이터를 삭제할 수 있습니다.</p>
+<ul>
+<li><b>앱 안에서</b>: 설정 &gt; 계정 &gt; 계정 삭제</li>
+<li><b>웹에서</b>: <a href="delete-account.html">계정 삭제 요청 안내</a> 페이지의 절차에 따라 이메일로 요청 (앱을 삭제했거나 열 수 없는 경우)</li>
+</ul>
+<p>웹·이메일 요청은 확인 후 30일 이내에 처리합니다. 구매 기록은 관련 법령(예: 전자상거래 기록 보존)이 정한 기간 동안 보관된 후 삭제될 수 있습니다.</p>
+
+<h2>5. 이용 연령</h2>
+<p>본 앱은 만 18세 미만을 대상으로 하지 않으며, 만 13세 미만 아동의 개인정보를 고의로 수집하지 않습니다. 만 13세 미만 아동의 정보가 수집된 사실을 알게 되면 지체 없이 삭제합니다.</p>
+
+<h2>6. 광고 개인화 동의 (EEA/UK)</h2>
+<p>EEA/UK 사용자는 앱 최초 실행 시 광고 개인화 동의를 선택할 수 있으며, 설정 &gt; Privacy options에서 언제든지 변경할 수 있습니다.</p>
+
+<h2>7. 문의</h2>
+<p>개발자: SeokpilYoon · 이메일: <a href="mailto:ssphill2@gmail.com">ssphill2@gmail.com</a></p>
+
+<hr style="margin:3em 0">
+
+<h1 class="en">ChipScore Privacy Policy (English)</h1>
+<p class="updated en">Effective: 2026-XX-XX</p>
+
+<div class="en">
+<h2>1. Overview</h2>
+<p>ChipScore ("the App") is a score tracker for offline card games. No real money is involved in the App, and in-app currencies cannot be exchanged for cash. This policy is also linked from <b>Settings &gt; About</b> in the App.</p>
+
+<h2>2. Information we collect</h2>
+<ul>
+<li><b>User IDs</b> — the anonymous Firebase Authentication ID (shown as Player ID in Settings) and the RevenueCat app user ID, used to store your game data and wallet and to process purchases.</li>
+<li><b>Google account e-mail</b> — <i>optional</i>, only if you choose to link your account; used to restore data across devices.</li>
+<li><b>Nickname, game records, in-app currency balances, character/ceremony selections</b> — for multiplayer sync and persistence.</li>
+<li><b>Purchase history</b> — receipts, transaction IDs, product and time of purchase (Google Play Billing, RevenueCat) — to process and restore purchases, prevent duplicate grants and handle refund requests.</li>
+<li><b>Draw history</b> — for each draw: its number, payment method (ticket/Gold/Gem) and amount, server payment time, odds version and result (rarity, item, duplicate, shards), plus your ticket, shard and pity counters (Firestore <code>users/{uid}/gachaDraws</code>, <code>users/{uid}/gacha</code>) — to fix and deliver draw results and as an audit record for verifying odds and handling disputes or refund requests. <b>Kept until you delete your account.</b></li>
+<li><b>Advertising ID, ad interactions and approximate location inferred from your IP address</b> (Google AdMob) — to serve ads, cap frequency and prevent fraud.</li>
+<li><b>Consent status</b> (Google UMP) — for users in the EEA/UK.</li>
+<li><b>Usage statistics</b> (Firebase Analytics) — to improve quality.</li>
+<li><b>Crash and diagnostic data</b> (Firebase Crashlytics) — crash traces, device model, OS version and app state at the time of a crash — to fix bugs.</li>
+</ul>
+<p><b>Camera</b>: used only to scan room QR codes; frames are processed on-device and never stored or transmitted.</p>
+<p><b>Location</b>: the App does not request the device location permission and does not collect precise (GPS) location. Our ad partner (Google AdMob) may infer your approximate location (country/city level) from your IP address.</p>
+<p>We do not collect contacts, photos or files.</p>
+
+<h2>3. Third-party services</h2>
+<p>Google Firebase (Authentication, Firestore, Analytics, Crashlytics, Remote Config), Google AdMob, Google Play Billing and RevenueCat process data under their own privacy policies (linked above). Advertising data (advertising ID, ad interactions, approximate location) is shared with Google. All other data is processed by these providers on our behalf; we do not sell personal information.</p>
+
+<h2>4. Retention and deletion</h2>
+<p>Game data, your wallet and your draw history are kept while your account exists and are deleted with it. You can delete your account and data:</p>
+<ul>
+<li><b>In the App</b>: Settings &gt; Account &gt; Delete account.</li>
+<li><b>On the web</b>: follow the <a href="delete-account.html">account deletion request</a> page to request deletion by e-mail (if you no longer have the App or cannot open it).</li>
+</ul>
+<p>Web/e-mail requests are completed within 30 days of verification. Purchase records may be retained for the period required by law and then deleted.</p>
+
+<h2>5. Age</h2>
+<p>The App is not directed at anyone under 18, and we do not knowingly collect personal information from children under 13. If we learn that we have, we delete it promptly.</p>
+
+<h2>6. Ad-personalisation consent (EEA/UK)</h2>
+<p>You can change your choice at any time in Settings &gt; Privacy options.</p>
+
+<h2>7. Contact</h2>
+<p>Developer: SeokpilYoon · <a href="mailto:ssphill2@gmail.com">ssphill2@gmail.com</a></p>
+</div>
+
+</body>
+</html>

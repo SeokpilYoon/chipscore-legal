@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ChipScore 확률 정보 / Draw Odds</title>
+<style>
+  body { font-family: -apple-system, "Segoe UI", "Malgun Gothic", sans-serif; max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; line-height: 1.7; color: #1a2b22; }
+  h1 { font-size: 1.5rem; border-bottom: 2px solid #c9a13b; padding-bottom: 8px; }
+  h2 { font-size: 1.15rem; margin-top: 2em; color: #14432e; }
+  .tbl { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 0.92rem; }
+  th, td { border: 1px solid #cdd7d1; padding: 8px 10px; text-align: left; vertical-align: top; }
+  th { background: #eef3f0; }
+  td.num, th.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .en { color: #3a4a42; }
+  .updated { color: #6a7a72; font-size: 0.9rem; }
+  .small { color: #5a6a62; font-size: 0.86rem; }
+  .note { background: #fdf6e3; border: 1px solid #e8d9a0; padding: 10px 14px; border-radius: 6px; font-size: 0.9rem; }
+  .key { background: #eef3f0; border: 1px solid #cdd7d1; padding: 10px 14px; border-radius: 6px; }
+</style>
+</head>
+<body>
+
+<!-- TODO(PUBLISH): 게시 전 사용자 작업. 아래 note 상자 전체와 이 주석을 삭제하고, "2026-XX-XX" 2곳을 실제 시행일로 바꾼 뒤 게시. -->
+<div class="note">⚠️ <b>TODO — 게시 전 사용자 작업 (게시본에서는 이 상자를 삭제)</b>
+<ol style="margin:6px 0 0; padding-left:20px">
+<li>시행일 <code>2026-XX-XX</code> 2곳(한국어·영어)을 <code>config/gacha</code>(버전 <code>2026-09-29.1</code>)를 prod에 시드한 날짜로 교체</li>
+<li><code>privacy-policy.html</code> · <code>terms-of-service.html</code> · <code>delete-account.html</code>과 같은 공개 호스트의 같은 폴더에 게시 (<code>https://&lt;게시 호스트&gt;/gacha-odds.html</code>)</li>
+<li>URL을 앱의 확률 정보 시트(웹 링크), 스토어 자세한 설명, 이용약관에 연결</li>
+<li><b><code>firebase/config/gacha.json</code>의 <code>version</code>·확률·비용·아이템이 바뀌면 이 페이지를 먼저 갱신한 뒤 시드</b>한다 (확률 값은 <code>firebase/gacha/gacha-core.mjs</code>의 임계값으로 다시 계산)</li>
+</ol></div>
+
+<h1>ChipScore 확률형 아이템 정보</h1>
+<p class="updated">확률 버전: <b>2026-09-29.1</b> · 시행일: 2026-XX-XX · 개발자: SeokpilYoon</p>
+
+<div class="key">
+<b>요약</b>
+<ul style="margin:6px 0 0">
+<li>뽑기로 얻는 것은 <b>캐릭터와 승리 세레머니(꾸미기 아이템)뿐</b>입니다. 게임 점수·순위에 영향이 없고, <b>현금 가치가 없으며 현금으로 바꾸거나 다른 이용자에게 넘길 수 없습니다.</b></li>
+<li>등급 확률: <b>S 6% · A 24% · B 70%</b>. 뽑기 대상은 아래 7종이며 확률은 모든 이용자에게 똑같이 적용됩니다.</li>
+<li>천장: S 없이 <b>50번째</b> 뽑기는 S 확정. A 이상 없이 <b>10번째</b> 뽑기는 A 이상 확정.</li>
+<li>결과는 <b>결제하는 순간 서버 시간으로 확정</b>되며 다시 뽑거나 취소할 수 없습니다.</li>
+</ul>
+</div>
+
+<h2>1. 대상 상품과 뽑는 방법</h2>
+<p>ChipScore(이하 "본 앱")의 뽑기는 캐릭터·세레머니 꾸미기 아이템 7종 중 하나를 무작위로 지급하는 확률형 아이템입니다. 기본 제공 아이템(캐릭터 Leonard, 세레머니 빅토리)은 처음부터 보유하므로 뽑기 대상이 아닙니다.</p>
+<div class="tbl"><table>
+<tr><th>뽑기</th><th>티켓으로</th><th>Gold로</th><th>Gem으로</th></tr>
+<tr><td>1회</td><td>티켓 1장</td><td>1,500 Gold</td><td>Gem 100</td></tr>
+<tr><td>10회 연속</td><td>티켓 10장</td><td>13,500 Gold (1회당 1,350)</td><td>Gem 900 (1회당 90)</td></tr>
+</table></div>
+<p>Gem은 Google Play 결제로 구매하는 유료 재화입니다. Gold는 게임을 마치거나 매일 무료로 받는 재화로, 돈으로 살 수 없습니다. Gold 뽑기는 <b>하루 최대 30회</b>까지 할 수 있으며 10회 연속 뽑기는 10회로 셉니다(예: 10회 연속 3번, 또는 1회 30번). 10회 연속 뽑기는 1회 뽑기를 10번 하는 것과 확률이 같습니다(각 회차가 독립적으로 추첨되며, 아래 천장 규칙만 이어서 적용됩니다). 결제 수단은 확률에 영향을 주지 않습니다.</p>
+<p>1회 뽑기 버튼은 <b>티켓 → Gold → Gem</b> 순서로 쓸 수 있는 결제 수단을 고르며, 버튼 위에서 직접 바꿀 수 있습니다. 버튼에는 실제로 차감될 재화와 금액이 표시됩니다.</p>
+<p><b>티켓 얻는 방법</b></p>
+<ul>
+<li><b>매일 무료 1장</b> — 하루에 한 번 앱에서 받을 수 있습니다.</li>
+<li><b>게임 완료 보상 1장</b> — 참가한 방의 게임이 1라운드 이상 진행된 뒤 종료되면 방마다 1장, <b>하루 최대 3장</b>.</li>
+</ul>
+<p>"하루"는 <b>UTC 기준 날짜</b>이며 한국 시간 <b>매일 오전 9시</b>에 바뀝니다(Gold 뽑기의 하루 30회 한도도 같습니다). 날짜 판정은 기기 시계가 아니라 서버 시간으로 합니다.</p>
+
+<h2>2. 등급별 확률</h2>
+<div class="tbl"><table>
+<tr><th>등급</th><th class="num">확률</th><th class="num">실제 적용 값</th><th>대상 아이템 수</th></tr>
+<tr><td>S</td><td class="num">6.00%</td><td class="num">5.9999999823%</td><td>3종</td></tr>
+<tr><td>A</td><td class="num">24.00%</td><td class="num">23.9999999991%</td><td>2종</td></tr>
+<tr><td>B</td><td class="num">70.00%</td><td class="num">70.0000000186%</td><td>2종</td></tr>
+</table></div>
+<p>같은 등급 안에서는 모든 아이템이 같은 확률로 나옵니다.</p>
+
+<h2>3. 아이템별 확률</h2>
+<div class="tbl"><table>
+<tr><th>아이템 (한국어 / English)</th><th>종류</th><th>등급</th><th class="num">확률</th><th class="num">실제 적용 값</th></tr>
+<tr><td>TheBoss / TheBoss</td><td>캐릭터</td><td>S</td><td class="num">2.00%</td><td class="num">1.9999999936%</td></tr>
+<tr><td>에어 프리즈 / Air Freeze</td><td>세레머니</td><td>S</td><td class="num">2.00%</td><td class="num">1.9999999936%</td></tr>
+<tr><td>플라잉 킥 / Flying Kick</td><td>세레머니</td><td>S</td><td class="num">2.00%</td><td class="num">1.9999999950%</td></tr>
+<tr><td>힙합 / Hip Hop</td><td>세레머니</td><td>A</td><td class="num">12.00%</td><td class="num">11.9999999995%</td></tr>
+<tr><td>스네이크 댄스 / Snake Dance</td><td>세레머니</td><td>A</td><td class="num">12.00%</td><td class="num">11.9999999995%</td></tr>
+<tr><td>Goblin / Goblin</td><td>캐릭터</td><td>B</td><td class="num">35.00%</td><td class="num">35.0000000093%</td></tr>
+<tr><td>골프 드라이브 / Golf Drive</td><td>세레머니</td><td>B</td><td class="num">35.00%</td><td class="num">35.0000000093%</td></tr>
+<tr><td colspan="3"><b>합계</b></td><td class="num"><b>100.00%</b></td><td class="num">100%</td></tr>
+</table></div>
+<p class="small"><b>표기 기준</b>: "확률"은 소수점 셋째 자리에서 반올림한 값입니다. 추첨은 서버 보안 규칙이 32비트 정수 구간(2<sup>32</sup>분의 n)으로 판정하므로, 실제로 적용되는 값은 "실제 적용 값" 열과 같고(소수점 열째 자리 반올림) 표기 확률과의 차이는 0.00000001%p 미만입니다. 위 확률은 천장이 발동하지 않은 일반 뽑기 1회의 확률입니다.</p>
+
+<h2>4. 천장(확정 보장)</h2>
+<ul>
+<li><b>S 천장 — 50회</b>: S 등급 없이 49회를 뽑으면 <b>50번째 뽑기는 S 등급 확정</b>입니다. S 3종 중 하나가 각각 1/3(33.33%) 확률로 나옵니다. S가 나오면 카운트는 0으로 돌아갑니다.</li>
+<li><b>A 이상 천장 — 연속 10회</b>: A 이상(A 또는 S) 없이 9회를 뽑으면 <b>10번째 뽑기는 A 이상 확정</b>입니다. 이때 등급은 <b>S 20% · A 80%</b>(실제 적용 값 S 19.9999999953% · A 80.0000000047%)로 나뉘며, 아이템별로는 S 3종 각 6.67%, A 2종 각 40.00%입니다. A 또는 S가 나오면 카운트는 0으로 돌아갑니다.</li>
+<li>두 천장은 <b>10회 연속 뽑기 단위가 아니라 뽑기 횟수를 계속 이어서</b> 셉니다(1회 뽑기와 10회 연속 뽑기, 티켓·Gold·Gem을 모두 합산, 앱을 껐다 켜도 유지). 따라서 10회 연속 뽑기에는 항상 A 이상이 1개 이상 포함됩니다.</li>
+<li>두 천장이 같은 회차에 겹치면 S 천장이 우선합니다.</li>
+<li>현재 천장 진행 상황(예: "S 확정까지 N회")은 앱의 뽑기 화면에 표시됩니다.</li>
+</ul>
+<p class="small"><b>천장을 포함한 장기 평균(참고)</b>: 뽑기를 계속 이어서 할 때 전체 뽑기 중 각 등급이 나오는 비율은 S 약 6.43% · A 약 24.61% · B 약 68.96%이며, 아이템별로는 S 각 약 2.14% · A 각 약 12.31% · B 각 약 34.48%입니다(위 규칙으로 계산한 기댓값이며 개인의 결과는 이와 다를 수 있습니다).</p>
+
+<h2>5. 중복 아이템과 조각 교환</h2>
+<p>이미 보유한 아이템도 뽑기 대상에 그대로 포함되며, 중복으로 나오면 아이템 대신 <b>조각</b>으로 바뀝니다.</p>
+<div class="tbl"><table>
+<tr><th>등급</th><th class="num">중복 시 받는 조각</th><th class="num">원하는 아이템 1개 교환에 필요한 조각</th></tr>
+<tr><td>S</td><td class="num">60</td><td class="num">600</td></tr>
+<tr><td>A</td><td class="num">25</td><td class="num">250</td></tr>
+<tr><td>B</td><td class="num">10</td><td class="num">100</td></tr>
+</table></div>
+<p>조각으로는 아직 보유하지 않은 뽑기 대상 아이템 중 원하는 것을 골라 교환할 수 있습니다(교환은 확률이 아니라 확정 지급입니다). 조각은 현금 가치가 없고 양도·환불할 수 없습니다.</p>
+
+<h2>6. 모두 보유한 경우 (풀 소진)</h2>
+<p>뽑기 대상 7종을 모두 보유하면 <b>뽑기를 판매하지 않습니다.</b> 이 경우 결제 단계 전에 서버가 뽑기를 거부하므로, 재화만 쓰고 아무것도 받지 못하는 일은 없습니다. 새 아이템이 추가되면 확률 버전을 올리고 이 페이지를 먼저 갱신합니다.</p>
+
+<h2>7. 추첨 방식과 확정</h2>
+<ul>
+<li>결과는 <b>결제(티켓·Gold·Gem 차감)가 서버에 기록되는 순간의 서버 시간</b>으로 정해지며, 서버 보안 규칙이 공개된 계산 방식과 정확히 일치하는 결과만 받아들입니다. 기기나 이용자가 결과를 고를 수 없습니다.</li>
+<li>결과는 결제 시점에 확정되며 <b>다시 뽑기, 취소, 결과 변경은 할 수 없습니다.</b> 앱이 도중에 종료되어도 같은 결과가 다음 실행 때 지급됩니다.</li>
+<li>뽑기에는 결제 시점의 확률 버전이 적용됩니다. 결제 후 확률 버전이 바뀌어도 이미 결제한 뽑기의 결과는 바뀌지 않습니다.</li>
+<li>모든 뽑기는 결제 수단·확률 버전·결과와 함께 계정별 뽑기 기록으로 보관되며, 계정 삭제 시 함께 삭제됩니다(<a href="privacy-policy.html">개인정보처리방침</a>).</li>
+<li>확률·천장·비용을 바꿀 때는 새 확률 버전으로 이 페이지와 앱의 확률 정보를 먼저 갱신합니다.</li>
+</ul>
+
+<h2>8. 유의사항</h2>
+<ul>
+<li>뽑기로 얻는 아이템·조각·티켓은 <b>꾸미기 전용</b>이며 게임 점수·순위·승패에 영향을 주지 않습니다.</li>
+<li>게임 내 재화와 아이템은 <b>현금 가치가 없고</b>, 현금이나 Gem으로 되돌리거나(역환전) 다른 이용자에게 넘길 수 없습니다.</li>
+<li>유료 Gem의 환불은 Google Play 환불 정책과 <a href="terms-of-service.html">이용약관</a>을 따릅니다. 뽑기에 사용된 Gem은 결과가 확정되므로 환불 대상이 아닙니다(관련 법령이 정한 경우 제외).</li>
+<li>본 앱은 만 18세 이상 이용자를 대상으로 합니다. 미성년자가 결제하려면 법정대리인의 동의가 필요합니다.</li>
+<li>본 앱은 벨기에·네덜란드에서는 제공되지 않습니다.</li>
+<li>보유한 티켓과 조각은 현재 유효기간이 없으며, 계정을 삭제하면 소멸합니다.</li>
+</ul>
+
+<h2>9. 문의</h2>
+<p>개발자: SeokpilYoon · 이메일: <a href="mailto:ssphill2@gmail.com">ssphill2@gmail.com</a></p>
+
+<hr style="margin:3em 0">
+
+<h1 class="en">ChipScore Draw Odds (English)</h1>
+<p class="updated en">Odds version: <b>2026-09-29.1</b> · Effective: 2026-XX-XX · Developer: SeokpilYoon</p>
+
+<div class="en">
+<div class="key">
+<b>At a glance</b>
+<ul style="margin:6px 0 0">
+<li>Draws give <b>cosmetic items only</b> — characters and victory ceremonies. They do not affect scores or standings, <b>have no cash value, and can never be cashed out or transferred</b> to another player.</li>
+<li>Rarity odds: <b>S 6% · A 24% · B 70%</b>. The 7 items below are drawable, and the same odds apply to every player.</li>
+<li>Pity: the <b>50th</b> draw without an S is a guaranteed S. The <b>10th</b> draw in a row without an A or better is a guaranteed A or better.</li>
+<li>Each result is <b>fixed by the server clock the moment you pay</b>. It cannot be re-rolled or cancelled.</li>
+</ul>
+</div>
+
+<h2>1. What you draw and how</h2>
+<p>A draw in ChipScore ("the App") gives one of 7 cosmetic items at random. The starter items (the character Leonard and the Victory ceremony) are owned from the start and are not in the draw.</p>
+<div class="tbl"><table>
+<tr><th>Draw</th><th>With tickets</th><th>With Gold</th><th>With Gems</th></tr>
+<tr><td>Single</td><td>1 ticket</td><td>1,500 Gold</td><td>100 Gems</td></tr>
+<tr><td>10 in a row</td><td>10 tickets</td><td>13,500 Gold (1,350 per draw)</td><td>900 Gems (90 per draw)</td></tr>
+</table></div>
+<p>Gems are a paid currency bought through Google Play. Gold is earned by finishing games and from the daily free claim; it cannot be bought. You can make <b>up to 30 Gold draws a day</b>, and a 10-draw counts as 10 (for example three 10-draws, or 30 singles). A 10-draw has exactly the same odds as ten single draws: each draw is independent, and only the pity counters below carry over. How you pay never changes the odds.</p>
+<p>The single-draw button picks what pays in the order <b>ticket → Gold → Gem</b>, and you can switch it yourself. The button always shows the currency and the amount it will take.</p>
+<p><b>Getting tickets</b></p>
+<ul>
+<li><b>1 free ticket per day</b>, claimed in the App.</li>
+<li><b>1 ticket per finished game</b> — when a room you played in ends after at least one round; one per room, <b>up to 3 per day</b>.</li>
+</ul>
+<p>A "day" is a <b>UTC calendar day</b> (it changes at 00:00 UTC = 09:00 in Korea; the 30 Gold draws a day reset then too), judged by the server clock, not your device.</p>
+
+<h2>2. Odds by rarity</h2>
+<div class="tbl"><table>
+<tr><th>Rarity</th><th class="num">Odds</th><th class="num">Exact applied value</th><th>Items</th></tr>
+<tr><td>S</td><td class="num">6.00%</td><td class="num">5.9999999823%</td><td>3</td></tr>
+<tr><td>A</td><td class="num">24.00%</td><td class="num">23.9999999991%</td><td>2</td></tr>
+<tr><td>B</td><td class="num">70.00%</td><td class="num">70.0000000186%</td><td>2</td></tr>
+</table></div>
+<p>Within a rarity, every item is equally likely.</p>
+
+<h2>3. Odds by item</h2>
+<div class="tbl"><table>
+<tr><th>Item (English / 한국어)</th><th>Type</th><th>Rarity</th><th class="num">Odds</th><th class="num">Exact applied value</th></tr>
+<tr><td>TheBoss / TheBoss</td><td>Character</td><td>S</td><td class="num">2.00%</td><td class="num">1.9999999936%</td></tr>
+<tr><td>Air Freeze / 에어 프리즈</td><td>Ceremony</td><td>S</td><td class="num">2.00%</td><td class="num">1.9999999936%</td></tr>
+<tr><td>Flying Kick / 플라잉 킥</td><td>Ceremony</td><td>S</td><td class="num">2.00%</td><td class="num">1.9999999950%</td></tr>
+<tr><td>Hip Hop / 힙합</td><td>Ceremony</td><td>A</td><td class="num">12.00%</td><td class="num">11.9999999995%</td></tr>
+<tr><td>Snake Dance / 스네이크 댄스</td><td>Ceremony</td><td>A</td><td class="num">12.00%</td><td class="num">11.9999999995%</td></tr>
+<tr><td>Goblin / Goblin</td><td>Character</td><td>B</td><td class="num">35.00%</td><td class="num">35.0000000093%</td></tr>
+<tr><td>Golf Drive / 골프 드라이브</td><td>Ceremony</td><td>B</td><td class="num">35.00%</td><td class="num">35.0000000093%</td></tr>
+<tr><td colspan="3"><b>Total</b></td><td class="num"><b>100.00%</b></td><td class="num">100%</td></tr>
+</table></div>
+<p class="small"><b>Rounding</b>: "Odds" are rounded to two decimal places. The server's security rules decide each draw with 32-bit integer ranges (n out of 2<sup>32</sup>), so the value actually applied is the "exact applied value" (rounded to ten decimal places). It differs from the rounded odds by less than 0.00000001 percentage points. These are the odds of a normal single draw when no pity applies.</p>
+
+<h2>4. Pity (guarantees)</h2>
+<ul>
+<li><b>S pity — 50 draws</b>: after 49 draws without an S, <b>the 50th draw is a guaranteed S</b>, split evenly between the three S items (1/3 each, 33.33%). The counter resets whenever you get an S.</li>
+<li><b>A-or-better pity — 10 in a row</b>: after 9 draws in a row without an A or S, <b>the 10th draw is a guaranteed A or better</b>, split <b>S 20% · A 80%</b> (exact: S 19.9999999953% · A 80.0000000047%); per item, 6.67% for each S item and 40.00% for each A item. The counter resets whenever you get an A or S.</li>
+<li>Both counters run <b>across all your draws</b>, not per 10-draw: single draws and 10-draws, tickets, Gold and Gems all count, and the counters survive restarting the App. As a result, every 10-draw contains at least one A or better.</li>
+<li>If both guarantees fall on the same draw, the S guarantee applies.</li>
+<li>Your current pity progress (for example "N draws to a guaranteed S") is shown on the draw screen in the App.</li>
+</ul>
+<p class="small"><b>Long-run average including pity (for reference)</b>: over many consecutive draws, about 6.43% of draws are S, 24.61% A and 68.96% B — about 2.14% for each S item, 12.31% for each A item and 34.48% for each B item. These are expected values calculated from the rules above; individual results will vary.</p>
+
+<h2>5. Duplicates and shard exchange</h2>
+<p>Items you already own stay in the draw. A duplicate turns into <b>shards</b> instead of the item.</p>
+<div class="tbl"><table>
+<tr><th>Rarity</th><th class="num">Shards per duplicate</th><th class="num">Shards to exchange for one item</th></tr>
+<tr><td>S</td><td class="num">60</td><td class="num">600</td></tr>
+<tr><td>A</td><td class="num">25</td><td class="num">250</td></tr>
+<tr><td>B</td><td class="num">10</td><td class="num">100</td></tr>
+</table></div>
+<p>You can exchange shards for any drawable item you do not own yet, of your choice — an exchange is a guaranteed grant, not a draw. Shards have no cash value and cannot be transferred or refunded.</p>
+
+<h2>6. When you own everything</h2>
+<p>Once you own all 7 drawable items, <b>draws are no longer sold to you</b>. The server refuses the draw before anything is charged, so you can never pay and receive nothing. If new items are added, we publish a new odds version and update this page first.</p>
+
+<h2>7. How draws are decided and fixed</h2>
+<ul>
+<li>The result is determined by <b>the server time at which your payment (tickets, Gold or Gems) is recorded</b>. The server's security rules accept only the result given by the published calculation, so neither the device nor the player can choose it.</li>
+<li>The result is fixed at payment. <b>Draws cannot be re-rolled, cancelled or changed.</b> If the App closes mid-draw, the same result is delivered the next time you open it.</li>
+<li>Each draw uses the odds version in force when you paid. A later version never changes a draw that has already been paid for.</li>
+<li>Every draw is kept in your account's draw history with its payment method, odds version and result, and is deleted with your account (see the <a href="privacy-policy.html">Privacy Policy</a>).</li>
+<li>Before any change to odds, pity or costs, we publish a new odds version on this page and in the App.</li>
+</ul>
+
+<h2>8. Please note</h2>
+<ul>
+<li>Items, shards and tickets from draws are <b>cosmetic only</b> and never affect scores, standings or results.</li>
+<li>In-app currencies and items <b>have no cash value</b>. They cannot be converted back to cash or Gems, or transferred to other players.</li>
+<li>Refunds of paid Gems follow Google Play's refund policy and our <a href="terms-of-service.html">Terms of Service</a>. Gems spent on a draw are not refundable once the result is fixed, except where the law requires.</li>
+<li>The App is intended for users aged 18 and over. Minors need a parent's or guardian's consent to make purchases.</li>
+<li>The App is not offered in Belgium or the Netherlands.</li>
+<li>Tickets and shards currently do not expire; they are lost if you delete your account.</li>
+</ul>
+
+<h2>9. Contact</h2>
+<p>Developer: SeokpilYoon · <a href="mailto:ssphill2@gmail.com">ssphill2@gmail.com</a></p>
+</div>
+
+</body>
+</html>
